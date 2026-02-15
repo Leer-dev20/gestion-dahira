@@ -1,5 +1,6 @@
 <?php
 // $cells est fourni par CellController->list()
+$members = Member::getAll($this->pdo);
 // $members est fourni pour compter les membres par cellule (optionnel)
 ?>
 <div class="bg-gradient-to-br from-[#1f3b31] to-[#2b5e4a] geometric-pattern py-10">

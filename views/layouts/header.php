@@ -20,14 +20,13 @@
 <header class="border-b border-[#e2d9cc] bg-white/80 backdrop-blur-md sticky top-0 z-50">
     <div class="container mx-auto px-4 py-3 flex items-center justify-between">
         <a href="/dahira-gestion/public/" class="flex items-center gap-3">
-            <!-- Logo provisoire : remplacer par image si dispo -->
-            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#1f3b31] to-[#2b5e4a] flex items-center justify-center shadow-md">
-                <span class="text-[#fcf9f2] font-display font-bold text-lg">DK</span>
-            </div>
-            <div class="hidden sm:block">
-                <h1 class="font-display font-bold text-[#1f3b31] text-lg leading-tight">Dahira Khidmatoul Khadim</h1>
-                <p class="text-xs text-[#6b7b6b]">Casablanca</p>
-            </div>
+        <img src="/dahira-gestion/public/logo.jpg" alt="Dahira" class="h-10 w-auto" />
+        <div class="hidden sm:block">
+            <h1 class="font-display font-bold text-foreground text-lg leading-tight">
+                Dahira Khidmatoul Khadim
+            </h1>
+            <p class="text-xs text-muted-foreground">Casablanca</p>
+        </div>
         </a>
         <nav class="flex items-center gap-1">
             <a href="/dahira-gestion/public/" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all hover:bg-[#f0ebe3] <?= ($_SERVER['REQUEST_URI'] == '/dahira-gestion/public/' || $_SERVER['REQUEST_URI'] == '/dahira-gestion/public/index.php') ? 'bg-[#1f3b31] text-white shadow-md' : 'text-[#5a6d5a] hover:text-[#1f3b31]' ?>">
