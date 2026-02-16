@@ -39,7 +39,7 @@
                         <th class="px-4 py-3 text-left font-semibold text-[#1f3b31]">Téléphone</th>
                         <th class="px-4 py-3 text-left font-semibold text-[#1f3b31] hidden md:table-cell">Email</th>
                         <th class="px-4 py-3 text-left font-semibold text-[#1f3b31] hidden lg:table-cell">Adresse</th>
-                        <th class="px-4 py-3 text-left font-semibold text-[#1f3b31]">Rôle</th>
+                        <th class="px-4 py-3 text-left font-semibold text-[#1f3b31]">Statut</th>
                         <th class="px-4 py-3 text-right font-semibold text-[#1f3b31]">Actions</th>
                     </tr>
                 </thead>
@@ -54,7 +54,7 @@
                             <span class="inline-block px-2 py-1 rounded-full text-xs font-medium 
                                 <?php
                                 $role = strtolower($member['role']);
-                                if ($role === 'président' || $role === 'présidente') echo 'bg-[#1f3b31] text-white';
+                                if ($role === 'Dieuwrigne' || $role === 'présidente') echo 'bg-[#1f3b31] text-white';
                                 elseif ($role === 'secrétaire') echo 'bg-[#d4a843] text-[#1f3b31]';
                                 elseif ($role === 'trésorier' || $role === 'trésorière') echo 'bg-[#2b5e4a] text-white';
                                 else echo 'bg-[#f0ebe3] text-[#5a6d5a]';

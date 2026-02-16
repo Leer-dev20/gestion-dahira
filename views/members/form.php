@@ -52,10 +52,10 @@ $isEdit = isset($member) && $member;
                 </select>
             </div>
             <div>
-                <label class="block text-sm font-medium text-[#1f3b31] mb-1">Rôle</label>
+                <label class="block text-sm font-medium text-[#1f3b31] mb-1">Statut</label>
                 <select name="role" class="w-full px-4 py-2 border border-[#e2d9cc] rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#d4a843]">
                     <?php 
-                    $roles = ['Président', 'Présidente', 'Secrétaire', 'Trésorier', 'Trésorière', 'Membre'];
+                    $roles = ['Dieuwrigne', 'Présidente', 'Secrétaire', 'Trésorier', 'Trésorière', 'Membre'];
                     foreach ($roles as $r):
                     ?>
                     <option value="<?= $r ?>" <?= $isEdit && $member['role'] == $r ? 'selected' : '' ?>><?= $r ?></option>
