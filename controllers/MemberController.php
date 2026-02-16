@@ -32,7 +32,7 @@ class MemberController {
                 'role' => $_POST['role'],
             ];
             Member::create($this->pdo, $data);
-            header('Location: /membres');
+            header('Location: /dahira-gestion/public/membres');
             exit;
         }
         $cells = Cell::getAll($this->pdo);
@@ -44,7 +44,7 @@ class MemberController {
     public function edit($id) {
         $member = Member::find($this->pdo, $id);
         if (!$member) {
-            header('Location: /membres');
+            header('Location: /dahira-gestion/public/membres');
             exit;
         }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -59,7 +59,7 @@ class MemberController {
                 'role' => $_POST['role'],
             ];
             Member::update($this->pdo, $id, $data);
-            header('Location: /membres');
+            header('Location: /dahira-gestion/public/membres');
             exit;
         }
         $cells = Cell::getAll($this->pdo);
@@ -70,7 +70,7 @@ class MemberController {
 
     public function delete($id) {
         Member::delete($this->pdo, $id);
-        header('Location: /membres');
+        header('Location: /dahira-gestion/public/membres');
         exit;
     }
 }
