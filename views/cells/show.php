@@ -54,11 +54,12 @@
                             <span class="inline-block px-2 py-1 rounded-full text-xs font-medium 
                                 <?php
                                 $role = strtolower($member['role']);
-                                if ($role === 'Dieuwrigne' || $role === 'Dwr-commission') echo 'bg-[#1f3b31] text-white';
+                                if ($role === 'Dieuwrine' || $role === 'Dwr-commission') echo 'bg-[#1f3b31] text-white';
                                 elseif ($role === 'Secrétaire') echo 'bg-[#d4a843] text-[#1f3b31]';
-                                elseif ($role === 'Finance') echo 'bg-[#2b5e4a] text-white';
+                                elseif ($role === 'Finance') echo 'bg-[#2b5e4a] text-[#1f3b31]';
                                 elseif ($role === 'Culturelle') echo 'bg-[#8b4513] text-white';
                                 elseif ($role === 'Organisation') echo 'bg-[#4b0082] text-white';
+                                elseif ($role === 'Communication') echo 'bg-[#c49a33] text-[#1f3b31]';
                                 else echo 'bg-[#f0ebe3] text-[#5a6d5a]';
                                 ?>">
                                 <?= htmlspecialchars($member['role']) ?>

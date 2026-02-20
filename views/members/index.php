@@ -70,9 +70,12 @@ $cellFilter = isset($_GET['cell_id']) ? $_GET['cell_id'] : '';
                             <span class="inline-block px-2 py-1 rounded-full text-xs font-medium 
                                 <?php
                                 $role = strtolower($member['role']);
-                                if ($role === 'Dieuwrigne' || $role === 'présidente') echo 'bg-[#1f3b31] text-white';
-                                elseif ($role === 'secrétaire') echo 'bg-[#d4a843] text-[#1f3b31]';
-                                elseif ($role === 'trésorier' || $role === 'trésorière') echo 'bg-[#2b5e4a] text-white';
+                                if ($role === 'dieuwrine' || $role === 'dwr-commission') echo 'bg-[#1f3b31] text-white';
+                                elseif ($role === 'secrétaire') echo 'bg-[#d4a843] text-white';
+                                elseif ($role === 'culturelle') echo 'bg-[#5a6d5a] text-white';
+                                elseif ($role === 'finance') echo 'bg-[#2b5e4a] text-white';
+                                elseif ($role === 'organisation') echo 'bg-[#6b7b6b] text-white';
+                                elseif ($role === 'communication') echo 'bg-[#c49a33] text-[#1f3b31]';
                                 else echo 'bg-[#f0ebe3] text-[#5a6d5a]';
                                 ?>">
                                 <?= htmlspecialchars($member['role']) ?>

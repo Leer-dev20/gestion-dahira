@@ -34,23 +34,22 @@ class Cotisation {
     }
 
     public static function toggle($pdo, $memberId, $cellId, $month, $year) {
-        // Vérifier si une ligne existe
-        $stmt = $pdo->prepare("SELECT id, paid FROM cotisations WHERE member_id = ? AND month = ? AND year = ?");
-        $stmt->execute([$memberId, $month, $year]);
-        $existing = $stmt->fetch();
+    // Vérifier si une ligne existe
+    $stmt = $pdo->prepare("SELECT id, paid FROM cotisations WHERE member_id = ? AND month = ? AND year = ?");
+    $stmt->execute([$memberId, $month, $year]);
+    $existing = $stmt->fetch();
 
-        if ($existing) {
-            // Basculer paid
-            $newPaid = !$existing['paid'];
-            $update = $pdo->prepare("UPDATE cotisations SET paid = ?, paid_date = IF(? = 1, CURDATE(), NULL) WHERE id = ?");
-            return $update->execute([$newPaid, $newPaid, $existing['id']]);
-        } else {
-            // Créer une nouvelle ligne avec paid = true
-            $insert = $pdo->prepare("INSERT INTO cotisations (member_id, cell_id, month, year, amount, paid, paid_date) VALUES (?, ?, ?, ?, 100, 1, CURDATE())");
-            return $insert->execute([$memberId, $cellId, $month, $year]);
-        }
+    if ($existing) {
+        // Basculer paid
+        $newPaid = !$existing['paid'];
+        $update = $pdo->prepare("UPDATE cotisations SET paid = ?, paid_date = IF(? = 1, CURDATE(), NULL) WHERE id = ?");
+        return $update->execute([$newPaid, $newPaid, $existing['id']]);
+    } else {
+        // Créer une nouvelle ligne avec paid = true
+        $insert = $pdo->prepare("INSERT INTO cotisations (member_id, cell_id, month, year, amount, paid, paid_date) VALUES (?, ?, ?, ?, 100, 1, CURDATE())");
+        return $insert->execute([$memberId, $cellId, $month, $year]);
     }
-
+}
     public static function getStats($pdo, $year, $cellId = null) {
         // Compter le nombre total de membres (distincts) dans la cellule ou global
         $sqlMembers = "SELECT COUNT(DISTINCT id) FROM members";

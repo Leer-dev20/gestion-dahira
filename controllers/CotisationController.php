@@ -34,17 +34,22 @@ class CotisationController {
     }
 
     public function toggle() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $memberId = $_POST['member_id'];
-            $cellId = $_POST['cell_id'];
-            $month = $_POST['month'];
-            $year = $_POST['year'];
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $memberId = $_POST['member_id'] ?? null;
+        $cellId = $_POST['cell_id'] ?? null;
+        $month = $_POST['month'] ?? null;
+        $year = $_POST['year'] ?? null;
 
-            Cotisation::toggle($this->pdo, $memberId, $cellId, $month, $year);
-            // Répondre en JSON pour AJAX
+        if (!$memberId || !$cellId || !$month || !$year) {
             header('Content-Type: application/json');
-            echo json_encode(['success' => true]);
+            echo json_encode(['success' => false, 'error' => 'Paramètres manquants']);
             exit;
         }
+
+        $success = Cotisation::toggle($this->pdo, $memberId, $cellId, $month, $year);
+        header('Content-Type: application/json');
+        echo json_encode(['success' => $success]);
+        exit;
     }
+}
 }

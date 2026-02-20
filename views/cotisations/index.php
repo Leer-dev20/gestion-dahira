@@ -143,38 +143,76 @@ $currentYear = date('Y');
 </div>
 
 <script>
-document.querySelectorAll('.cotisation-toggle').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const memberId = this.dataset.memberId;
-        const cellId = this.dataset.cellId;
-        const month = this.dataset.month;
-        const year = this.dataset.year;
-        const currentPaid = this.dataset.paid === '1';
-
-        fetch('/dahira-gestion/public/cotisations/toggle', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams({ member_id: memberId, cell_id: cellId, month, year })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                this.dataset.paid = currentPaid ? '0' : '1';
-                this.classList.toggle('bg-[#1f3b31]/15');
-                this.classList.toggle('text-[#1f3b31]');
-                this.classList.toggle('bg-red-100');
-                this.classList.toggle('text-red-700/60');
-                // Changer l'icône
-                const icon = this.querySelector('svg');
-                if (icon) {
-                    if (currentPaid) {
-                        icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>';
-                    } else {
-                        icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>';
-                    }
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleButtons = document.querySelectorAll('.cotisation-toggle');
+    
+    toggleButtons.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Récupérer les données
+            const memberId = this.dataset.memberId;
+            const cellId = this.dataset.cellId;
+            const month = this.dataset.month;
+            const year = this.dataset.year;
+            const currentPaid = this.dataset.paid === '1';
+            
+            // Désactiver le bouton pendant l'appel
+            this.disabled = true;
+            this.classList.add('opacity-50', 'cursor-not-allowed');
+            
+            // Effectuer la requête AJAX
+            fetch('/dahira-gestion/public/cotisations/toggle', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ 
+                    member_id: memberId, 
+                    cell_id: cellId, 
+                    month: month, 
+                    year: year 
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erreur réseau : ' + response.status);
                 }
-                // Mettre à jour le total de la ligne (optionnel, on peut recalculer)
-            }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Mise à jour visuelle
+                    this.dataset.paid = currentPaid ? '0' : '1';
+                    this.classList.toggle('bg-[#1f3b31]/15');
+                    this.classList.toggle('text-[#1f3b31]');
+                    this.classList.toggle('bg-red-100');
+                    this.classList.toggle('text-red-700/60');
+                    
+                    // Changer l'icône
+                    const icon = this.querySelector('svg');
+                    if (icon) {
+                        if (currentPaid) {
+                            icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>';
+                        } else {
+                            icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>';
+                        }
+                    }
+                    
+                    // Mettre à jour le total de la ligne (optionnel)
+                    // Pour l'instant on ne recalcule pas le total général
+                } else {
+                    // Erreur retournée par le serveur
+                    alert('Erreur : ' + (data.error || 'Échec de la mise à jour'));
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('Problème de connexion au serveur. Vérifiez votre réseau.');
+            })
+            .finally(() => {
+                // Réactiver le bouton
+                this.disabled = false;
+                this.classList.remove('opacity-50', 'cursor-not-allowed');
+            });
         });
     });
 });
