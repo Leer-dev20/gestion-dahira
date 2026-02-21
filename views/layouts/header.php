@@ -21,7 +21,7 @@
 <header class="border-b border-[#e2d9cc] bg-white/80 backdrop-blur-md sticky top-0 z-50">
     <div class="container mx-auto px-4 py-3 flex items-center justify-between">
         <a href="/dahira-gestion/public/" class="flex items-center gap-3">
-        <img src="/dahira-gestion/public/logo.jpg" alt="Dahira" class="h-10 w-auto" />
+        <img src="/dahira-gestion/public/logo.png" alt="Dahira" class="h-10 w-auto" />
         <div class="hidden sm:block">
             <h1 class="font-display font-bold text-foreground text-lg leading-tight">
                 Dahira Khidmatoul Khadim
