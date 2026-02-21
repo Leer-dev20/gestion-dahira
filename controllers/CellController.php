@@ -3,11 +3,13 @@
 
 require_once __DIR__ . '/../models/Cell.php';
 require_once __DIR__ . '/../models/Member.php';
+require_once __DIR__ . '/AuthController.php';
 
 class CellController {
     private $pdo;
     private $cellModel;
     private $memberModel;
+    
 
     public function __construct($pdo) {
         $this->pdo = $pdo;
@@ -19,6 +21,7 @@ class CellController {
         $cells = Cell::getAll($this->pdo);
         $members = Member::getAll($this->pdo);
         $totalMembers = count($members);
+        AuthController::checkAuth();
         // Calculer le total des cotisations (optionnel)
         require_once __DIR__ . '/../views/layouts/header.php';
         require_once __DIR__ . '/../views/cells/index.php';

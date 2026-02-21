@@ -3,7 +3,11 @@
 
 class AuthController {
     private $pdo;
-
+    
+public function index() {
+    AuthController::checkAuth();
+    // reste du code
+}
     public function __construct($pdo) {
         $this->pdo = $pdo;
         if (session_status() === PHP_SESSION_NONE) {

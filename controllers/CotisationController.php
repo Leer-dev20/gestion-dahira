@@ -4,6 +4,7 @@
 require_once __DIR__ . '/../models/Cotisation.php';
 require_once __DIR__ . '/../models/Member.php';
 require_once __DIR__ . '/../models/Cell.php';
+require_once __DIR__ . '/AuthController.php';
 
 class CotisationController {
     private $pdo;
@@ -19,7 +20,7 @@ class CotisationController {
         $members = Member::getAll($this->pdo, $cellId);
         $cotisations = Cotisation::getAll($this->pdo, $year, $cellId);
         $cells = Cell::getAll($this->pdo);
-
+        AuthController::checkAuth();
         // Organiser les cotisations par membre et mois
         $cotisationsByMember = [];
         foreach ($cotisations as $c) {

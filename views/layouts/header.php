@@ -43,6 +43,26 @@
                 Cotisations
             </a>
         </nav>
+        <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+$isLogged = isset($_SESSION['user']);
+?>
+<header ...>
+    <div class="container ...">
+        <!-- logo et titre -->
+        <nav class="flex items-center gap-1">
+            <!-- vos liens existants -->
+            <?php if ($isLogged): ?>
+                <span class="text-sm text-[#1f3b31] ml-4 bg-[#f0ebe3] px-2 py-1 rounded"><?= htmlspecialchars($_SESSION['user']) ?></span>
+                <a href="/dahira-gestion/public/logout" class="ml-2 text-sm text-[#6b7b6b] hover:text-[#1f3b31] bg-[#ff1c1c] px-2 py-1 rounded transition-colors">
+                    Déconnexion
+                </a>
+            <?php endif; ?>
+        </nav>
+    </div>
+</header>
     </div>
 </header>
 

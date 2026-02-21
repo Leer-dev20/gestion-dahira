@@ -13,6 +13,35 @@ $request = $_SERVER['REQUEST_URI'];
 $base = '/dahira-gestion/public'; // À adapter selon votre configuration
 $path = str_replace($base, '', parse_url($request, PHP_URL_PATH));
 
+// ... après l'inclusion des contrôleurs
+
+$request = $_SERVER['REQUEST_URI'];
+$base = '/dahira-gestion/public';
+$path = str_replace($base, '', parse_url($request, PHP_URL_PATH));
+
+// Routes d'authentification (publiques)
+if ($path === '/login') {
+    $controller = new AuthController($pdo);
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $controller->login();
+    } else {
+        $controller->loginForm();
+    }
+    exit;
+}
+
+if ($path === '/logout') {
+    $controller = new AuthController($pdo);
+    $controller->logout();
+    exit;
+}
+
+// Routes protégées (tout le reste nécessite authentification)
+// On vérifie l'authentification avant d'instancier les contrôleurs
+// Mais il est plus simple de faire la vérification dans chaque contrôleur.
+
+// ... suite du switch existant
+
 // Routage simple
 switch ($path) {
     case '/':
@@ -60,4 +89,20 @@ switch ($path) {
     $controller = new CotisationController($pdo);
     $controller->graphData();
     break;
+}
+// Routes publiques (authentification)
+if ($path === '/login') {
+    $controller = new AuthController($pdo);
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $controller->login();
+    } else {
+        $controller->loginForm();
+    }
+    return;
+}
+
+if ($path === '/logout') {
+    $controller = new AuthController($pdo);
+    $controller->logout();
+    return;
 }

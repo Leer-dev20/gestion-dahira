@@ -3,6 +3,7 @@
 
 require_once __DIR__ . '/../models/Member.php';
 require_once __DIR__ . '/../models/Cell.php';
+require_once __DIR__ . '/AuthController.php';
 
 class MemberController {
     private $pdo;
@@ -12,6 +13,7 @@ class MemberController {
     }
 
     public function index() {
+        AuthController::checkAuth();
         $members = Member::getAll($this->pdo);
         $cells = Cell::getAll($this->pdo);
         require_once __DIR__ . '/../views/layouts/header.php';
