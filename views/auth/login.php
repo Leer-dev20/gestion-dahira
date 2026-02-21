@@ -6,7 +6,7 @@ $error = $error ?? '';
     <div class="max-w-md w-full space-y-8">
         <div>
             <div class="mx-auto w-20 h-20 rounded-full bg-gradient-to-br from-[#1f3b31] to-[#2b5e4a] flex items-center justify-center shadow-lg">
-                <span class="text-[#fcf9f2] font-display font-bold text-3xl">DK</span>
+                <img src="/dahira-gestion/public/logo.png" alt="Dahira" class="h-15 w-auto" />
             </div>
             <h2 class="mt-6 text-center font-display text-3xl font-bold text-[#1f3b31]">
                 Connexion
