@@ -56,4 +56,8 @@ switch ($path) {
         http_response_code(404);
         echo "404 Not Found";
         break;
+    case '/cotisations/graph-data':
+    $controller = new CotisationController($pdo);
+    $controller->graphData();
+    break;
 }

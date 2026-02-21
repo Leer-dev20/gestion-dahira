@@ -81,7 +81,39 @@ $currentYear = date('Y');
             <button type="submit" class="bg-[#1f3b31] text-white px-4 py-2 rounded-lg hover:bg-[#2b5e4a] transition-colors">Filtrer</button>
         </form>
     </div>
+<!-- Onglets Tableau / Graphiques -->
+<div class="flex gap-2 mb-4 border-b border-[#e2d9cc]">
+    <button id="tab-table" class="px-4 py-2 font-medium text-[#1f3b31] border-b-2 border-[#1f3b31]">Tableau</button>
+    <button id="tab-charts" class="px-4 py-2 font-medium text-[#6b7b6b] hover:text-[#1f3b31]">Graphiques</button>
+</div>
 
+<!-- Conteneur du tableau (visible par défaut) -->
+<div id="table-container">
+    <!-- ... le tableau existant ... -->
+</div>
+
+<!-- Conteneur des graphiques (caché par défaut) -->
+<div id="charts-container" class="hidden">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Graphique 1 : Paiements par mois -->
+        <div class="bg-white rounded-xl border border-[#e2d9cc] p-4 shadow-md">
+            <h3 class="font-display text-lg font-semibold mb-4">Paiements par mois (<?= $year ?>)</h3>
+            <canvas id="chart-monthly" width="400" height="200"></canvas>
+        </div>
+        <!-- Graphique 2 : Pourcentage de paiement par mois -->
+        <div class="bg-white rounded-xl border border-[#e2d9cc] p-4 shadow-md">
+            <h3 class="font-display text-lg font-semibold mb-4">Taux de paiement mensuel (%)</h3>
+            <canvas id="chart-percent" width="400" height="200"></canvas>
+        </div>
+        <!-- Graphique 3 : Répartition par cellule (si pas de filtre cellule) -->
+        <?php if (!isset($_GET['cell_id']) || $_GET['cell_id'] === ''): ?>
+        <div class="bg-white rounded-xl border border-[#e2d9cc] p-4 shadow-md lg:col-span-2">
+            <h3 class="font-display text-lg font-semibold mb-4">Paiements par cellule (<?= $year ?>)</h3>
+            <canvas id="chart-cells" width="200" height="100"></canvas>
+        </div>
+        <?php endif; ?>
+    </div>
+</div>
     <!-- Tableau des cotisations -->
     <div class="rounded-xl border border-[#e2d9cc] overflow-x-auto">
         <table class="w-full min-w-[800px]">
@@ -215,5 +247,112 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     });
+
+// Gestion des onglets
+    const tabTable = document.getElementById('tab-table');
+    const tabCharts = document.getElementById('tab-charts');
+    const tableContainer = document.getElementById('table-container');
+    const chartsContainer = document.getElementById('charts-container');
+
+    tabTable.addEventListener('click', function() {
+        tabTable.classList.add('border-[#1f3b31]', 'text-[#1f3b31]');
+        tabTable.classList.remove('text-[#6b7b6b]');
+        tabCharts.classList.remove('border-[#1f3b31]', 'text-[#1f3b31]');
+        tabCharts.classList.add('text-[#6b7b6b]');
+        tableContainer.classList.remove('hidden');
+        chartsContainer.classList.add('hidden');
+    });
+
+    tabCharts.addEventListener('click', function() {
+        tabCharts.classList.add('border-[#1f3b31]', 'text-[#1f3b31]');
+        tabCharts.classList.remove('text-[#6b7b6b]');
+        tabTable.classList.remove('border-[#1f3b31]', 'text-[#1f3b31]');
+        tabTable.classList.add('text-[#6b7b6b]');
+        tableContainer.classList.add('hidden');
+        chartsContainer.classList.remove('hidden');
+        
+        // Charger les données si ce n'est pas déjà fait
+        if (!window.chartsLoaded) {
+            loadChartData();
+            window.chartsLoaded = true;
+        }
+    });
+
+    // Fonction pour charger les données et créer les graphiques
+    function loadChartData() {
+        const year = new URLSearchParams(window.location.search).get('year') || <?= $year ?>;
+        const cellId = new URLSearchParams(window.location.search).get('cell_id') || '';
+
+        fetch(`/dahira-gestion/public/cotisations/graph-data?year=${year}&cell_id=${cellId}`)
+            .then(response => response.json())
+            .then(data => {
+                // Graphique des paiements par mois
+                const ctx1 = document.getElementById('chart-monthly').getContext('2d');
+                new Chart(ctx1, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Aoû','Sep','Oct','Nov','Déc'],
+                        datasets: [{
+                            label: 'Nombre de paiements',
+                            data: data.paidByMonth,
+                            backgroundColor: '#1f3b31',
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: false }
+                        }
+                    }
+                });
+
+                // Graphique des pourcentages
+                const ctx2 = document.getElementById('chart-percent').getContext('2d');
+                new Chart(ctx2, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Aoû','Sep','Oct','Nov','Déc'],
+                        datasets: [{
+                            label: 'Taux de paiement (%)',
+                            data: data.percentByMonth,
+                            borderColor: '#d4a843',
+                            backgroundColor: 'rgba(212, 168, 67, 0.1)',
+                            tension: 0.2,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: { min: 0, max: 100 }
+                        }
+                    }
+                });
+
+                // Graphique par cellule si présent
+                if (data.cellData && data.cellData.length > 0) {
+                    const ctx3 = document.getElementById('chart-cells').getContext('2d');
+                    new Chart(ctx3, {
+                        type: 'doughnut',
+                        data: {
+                            labels: data.cellData.map(item => item.cell),
+                            datasets: [{
+                                data: data.cellData.map(item => item.paid),
+                                backgroundColor: ['#1f3b31', '#2b5e4a', '#d4a843'],
+                                borderWidth: 0
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: { position: 'bottom' }
+                            }
+                        }
+                    });
+                }
+            })
+            .catch(error => console.error('Erreur chargement graphiques:', error));
+    }
 });
 </script>

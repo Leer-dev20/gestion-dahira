@@ -52,4 +52,56 @@ class CotisationController {
         exit;
     }
 }
+public function graphData() {
+    $year = isset($_GET['year']) ? (int)$_GET['year'] : (int)date('Y');
+    $cellId = isset($_GET['cell_id']) && $_GET['cell_id'] !== '' ? (int)$_GET['cell_id'] : null;
+
+    // Récupérer les cotisations pour l'année
+    $cotisations = Cotisation::getAll($this->pdo, $year, $cellId);
+
+    // Initialiser un tableau de 12 mois avec 0
+    $paidByMonth = array_fill(1, 12, 0);
+    $totalByMonth = array_fill(1, 12, 0);
+
+    foreach ($cotisations as $c) {
+        $month = $c['month'];
+        if ($c['paid']) {
+            $paidByMonth[$month] += 1;
+        }
+        $totalByMonth[$month] += 1; // total de cotisations pour le mois (y compris impayées)
+    }
+
+    // Calculer les pourcentages de paiement par mois
+    $percentByMonth = [];
+    for ($m = 1; $m <= 12; $m++) {
+        $percent = ($totalByMonth[$m] > 0) ? round(($paidByMonth[$m] / $totalByMonth[$m]) * 100) : 0;
+        $percentByMonth[$m] = $percent;
+    }
+
+    // Données pour un graphique par cellule (si pas de filtre cellule)
+    $cellData = [];
+    if (!$cellId) {
+        $cells = Cell::getAll($this->pdo);
+        foreach ($cells as $cell) {
+            // Compter les cotisations payées pour cette cellule et cette année
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM cotisations WHERE cell_id = ? AND year = ? AND paid = 1");
+            $stmt->execute([$cell['id'], $year]);
+            $paidCount = $stmt->fetchColumn();
+            $cellData[] = [
+                'cell' => $cell['short_name'],
+                'paid' => $paidCount
+            ];
+        }
+    }
+
+    header('Content-Type: application/json');
+    echo json_encode([
+        'year' => $year,
+        'cellId' => $cellId,
+        'paidByMonth' => array_values($paidByMonth), // pour Chart.js (indexé 0-11)
+        'percentByMonth' => array_values($percentByMonth),
+        'cellData' => $cellData
+    ]);
+    exit;
+}
 }
